@@ -1,6 +1,6 @@
 # useful_scripts
-This project is where I place useful scripts for quick access and display.  At this time, this will only contain scripts that I have created myself.
+This project is where I place useful scripts for quick access and display.  At this time, this project will only contain scripts that I have created myself.
 
-Current there is a python and sql subcategory.
-1) Python - contains a python script to load a csv and perform some basic counts
-2) sql - contains an Impala script to generically profile data
+## Python directory - Directory for python scripts.  Currently contains one python script and example output to load a csv and perform some basic summary statistics.  This includes domain of values, distribution percentages, and a few others.
+
+## sql directory - Directory for any handy SQL scripts.  Currently contains one Impala script w/ regular expressions to generically profile and categorize the data found in any given column.  Used to get a high level view of all different types of data contained within a column or set of columns.
