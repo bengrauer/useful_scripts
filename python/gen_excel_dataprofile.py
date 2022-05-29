@@ -466,7 +466,6 @@ def generate_excel_workbook(inputFileName, outputFileName):
     
     workbook = xlsxwriter.Workbook(outputFileName, {'nan_inf_to_errors': True})
     
-    df = load_file(inputFileName)
     summaryDf = generate_summary_stats(df)
 
     # Write the summary / DOV
