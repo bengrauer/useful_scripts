@@ -198,10 +198,9 @@ def excel_add_df(inputWorkBook, inputWorkSheet, inputSheetName, inputDataFrame,
         # add a column
         colNum = colNum + 1
 
+
 # ADD THE CERTAIN SUMMARY SHEET
 def excel_addsheet_summary_and_dov(workbook, df, summaryDf):
-    
-
     # Add the DOV Work sheet - quite a bit of code
     worksheet = workbook.add_worksheet('DOV')
 
@@ -225,7 +224,7 @@ def excel_addsheet_summary_and_dov(workbook, df, summaryDf):
     offset0Prct = 10
     offset25Prct = 11
     offset50Prct = 12
-    offset75Prct =13
+    offset75Prct = 13
     offset100Prct = 14
 
     offsetContOrDesc = 16
@@ -237,8 +236,8 @@ def excel_addsheet_summary_and_dov(workbook, df, summaryDf):
 
     # star the column Iteration at 2
     colIteration = 1
-    rowIteration = 0 # to start
-    rowDataHeader = offsetRowDataHeader # bumpt out to 5 to start, so we have 4 for summary data
+    rowIteration = 0  # to start
+    rowDataHeader = offsetRowDataHeader  # bumpt out to 5 to start, so we have 4 for summary data
 
     # set the row descriptions
     worksheet.write(rowIteration, 0, 'Col Name', bold)
@@ -260,54 +259,56 @@ def excel_addsheet_summary_and_dov(workbook, df, summaryDf):
     worksheet.write(offsetContOrDesc, 0, 'Var Type')
     worksheet.write(offsetNotes, 0, 'Notes')
 
-    #columns = ['count','NaN','NaNPerc','mean','median','std','var','range','0%','25%','50%','75%','100%']
-    #dfOrdStat = pd.DataFrame(index=(['']), columns = columns )
+    # columns = ['count','NaN','NaNPerc','mean','median','std','var','range','0%','25%','50%','75%','100%']
+    # dfOrdStat = pd.DataFrame(index=(['']), columns = columns )
 
-    for column in summaryDf:
+    for column in df:
 
         # grab this from the detail dataFrame 
-        worksheet.write(rowIteration, colIteration, df[column].name, bold) # header
-        worksheet.write(offSetDataType, colIteration, str(df[column].dtypes)) # data type
+        worksheet.write(rowIteration, colIteration, df[column].name, bold)  # header
+        worksheet.write(offSetDataType, colIteration, str(df[column].dtypes))  # data type
 
         # use the summary DF here
-        #summaryDf.loc['totalNull']['card5']
+        # summaryDf.loc['totalNull']['card5']
         worksheet.write(offsetCount, colIteration, summaryDf.loc['count'][column])
         worksheet.write(offSetNumNaN, colIteration, summaryDf.loc['totalNull'][column])
         worksheet.write(offSetNaNPerc, colIteration, summaryDf.loc['totalNullPerc'][column])
-        # mean
-        worksheet.write(offsetMean, colIteration, summaryDf.loc['mean'][column])
-        # median
-        worksheet.write(offsetMedian, colIteration, summaryDf.loc['median'][column])
-        # Std
-        worksheet.write(offsetStd, colIteration, summaryDf.loc['std'][column])
-        # Var
-        worksheet.write(offsetVar, colIteration, summaryDf.loc['var'][column])
-        # Range    
-        worksheet.write(offsetRange, colIteration, summaryDf.loc['range'][column])
-        # min
-        worksheet.write(offset0Prct, colIteration, summaryDf.loc['0%'][column])
-        # 25%
-        worksheet.write(offset25Prct, colIteration, summaryDf.loc['25%'][column])
-        # 50%
-        worksheet.write(offset50Prct, colIteration, summaryDf.loc['50%'][column])
-        # 75%
-        worksheet.write(offset75Prct, colIteration, summaryDf.loc['75%'][column])
-        # max
-        worksheet.write(offset100Prct, colIteration, summaryDf.loc['100%'][column])
 
+        if np.issubdtype(df[column].dtype, np.number):
+            # mean
+            worksheet.write(offsetMean, colIteration, summaryDf.loc['mean'][column])
+            # median
+            worksheet.write(offsetMedian, colIteration, summaryDf.loc['median'][column])
+            # Std
+            worksheet.write(offsetStd, colIteration, summaryDf.loc['std'][column])
+            # Var
+            worksheet.write(offsetVar, colIteration, summaryDf.loc['var'][column])
+            # Range    
+            worksheet.write(offsetRange, colIteration, summaryDf.loc['range'][column])
+            # min
+            worksheet.write(offset0Prct, colIteration, summaryDf.loc['0%'][column])
+            # 25%
+            worksheet.write(offset25Prct, colIteration, summaryDf.loc['25%'][column])
+            # 50%
+            worksheet.write(offset50Prct, colIteration, summaryDf.loc['50%'][column])
+            # 75%
+            worksheet.write(offset75Prct, colIteration, summaryDf.loc['75%'][column])
+            # max
+            worksheet.write(offset100Prct, colIteration, summaryDf.loc['100%'][column])
 
         # header for the DOV
-        worksheet.write(rowDataHeader-1, colIteration, 'DOV', underline)
-        worksheet.write(rowDataHeader-1, colIteration+1, 'DistPrc', underline)
+        worksheet.write(rowDataHeader - 1, colIteration, 'DOV', underline)
+        worksheet.write(rowDataHeader - 1, colIteration + 1, 'DistPrc', underline)
 
         # shorten these down for real-estate in excel
-        const_dataTypeContinuous = 'continous' # 'cont'
+        const_dataTypeContinuous = 'continous'  # 'cont'
         const_dataTypeCategorical = 'categrical'
-        const_dataTypeDiscrete = 'discrete'    
+        const_dataTypeDiscrete = 'discrete'
 
         # init 
         varType = const_dataTypeContinuous
-        worksheet.write(offsetContOrDesc, colIteration, const_dataTypeContinuous) # auto set continous - discrete determined below
+        worksheet.write(offsetContOrDesc, colIteration,
+                        const_dataTypeContinuous)  # auto set continous - discrete determined below
 
         # TODO: could refine slightly. 
         # if numerical and > x then continous
@@ -315,82 +316,79 @@ def excel_addsheet_summary_and_dov(workbook, df, summaryDf):
         if df[column].nunique() > 500:
 
             # MOVED DOWN BELOW
-            #worksheet.write(rowDataHeader, colIteration, '> 500 unq', italic)
+            # worksheet.write(rowDataHeader, colIteration, '> 500 unq', italic)
 
             # maybe pass this in as an optional paramter
-            #worksheet.write_column(rowDataHeader+1, colIteration, df[column].head(100)) # shorten this to 100
-            #colIteration = colIteration + 1
+            # worksheet.write_column(rowDataHeader+1, colIteration, df[column].head(100)) # shorten this to 100
+            # colIteration = colIteration + 1
 
             # If we have a number
             if np.issubdtype(df[column].dtype, np.number):
                 varType = const_dataTypeContinuous
-                #worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'continuous') # data type
+                # worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'continuous') # data type
             else:
                 varType = const_dataTypeCategorical
-                #worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
+                # worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
         else:
 
             # here just saying if less than 25, then categorical vs continous - to move the dial
             if df[column].nunique() < 100:
                 if np.issubdtype(df[column].dtype, np.number):
                     varType = const_dataTypeDiscrete
-                    #worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'discrete') # data type
+                    # worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'discrete') # data type
                 else:
                     varType = const_dataTypeCategorical
-                    #worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
+                    # worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
             else:
                 varType = const_dataTypeCategorical
-                #worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
-                
+                # worksheet.write(rowIteration+offsetContOrDesc, colIteration, 'categorical') # data type
+
         # Write the final data type
-        worksheet.write(rowIteration+offsetContOrDesc, colIteration, varType)
+        worksheet.write(rowIteration + offsetContOrDesc, colIteration, varType)
 
         # if > 500 then write that at the start 
-        #if df[column].nunique() > 500:
+        # if df[column].nunique() > 500:
 
-            #worksheet.write(rowDataHeader, colIteration, '> 500 unq', italic)
-            #worksheet.write_column(rowDataHeader+1, colIteration, df[column].head(100)) # shorten this to 100
-            #colIteration = colIteration + 1        
+        # worksheet.write(rowDataHeader, colIteration, '> 500 unq', italic)
+        # worksheet.write_column(rowDataHeader+1, colIteration, df[column].head(100)) # shorten this to 100
+        # colIteration = colIteration + 1        
 
         # grab the distribution percentage
         disbDF = pd.DataFrame(df.groupby([column]).size() * 100 / len(df))
-        disbDF.rename(columns={0:'distprc'}, inplace=True)
-        disbDF = disbDF.sort_values(['distprc'], ascending=False)            
-            
+        disbDF.rename(columns={0: 'distprc'}, inplace=True)
+        disbDF = disbDF.sort_values(['distprc'], ascending=False)
+
         # rename index and reset
         disbDF = disbDF.rename_axis('dov').reset_index().copy()
-        
-            
+
         if df[column].nunique() > 500:
-            
+
             worksheet.write(rowDataHeader, colIteration, '> 500 unq', italic)
-            worksheet.write_column(rowDataHeader+1, colIteration, disbDF.loc[:, 'dov'].head(100)) # shorten this to 100
-            colIteration = colIteration + 1             
-            
+            worksheet.write_column(rowDataHeader + 1, colIteration,
+                                   disbDF.loc[:, 'dov'].head(100))  # shorten this to 100
+            colIteration = colIteration + 1
+
             worksheet.write(rowDataHeader, colIteration, '> 500 unq')
-            worksheet.write_column(rowDataHeader+1, colIteration, disbDF.loc[: ,'distprc'].head(100))
-            colIteration = colIteration + 1            
-            
+            worksheet.write_column(rowDataHeader + 1, colIteration, disbDF.loc[:, 'distprc'].head(100))
+            colIteration = colIteration + 1
+
         else:
 
-        
-            # write the distribution header + percentage
-
             # TODO: change the index name to "DOV" for better readability
-            worksheet.write_column(rowDataHeader, colIteration, disbDF.index) # here we are adding the index which is the DOV
+            worksheet.write_column(rowDataHeader, colIteration, disbDF.loc[:, 'dov'])
             colIteration = colIteration + 1
 
             worksheet.write(rowDataHeader, colIteration, 'DistPrc')
-            worksheet.write_column(rowDataHeader, colIteration, disbDF.loc[: ,'distprc'])
+            worksheet.write_column(rowDataHeader, colIteration, disbDF.loc[:, 'distprc'])
             colIteration = colIteration + 1
 
         # PULL THIS OUT INTO ANOTHER NOTEBOOK
         # Notes - here give a section for the note.
-            # if all nulls, remove
-            # if two parts of the distribution are above 10% - ok, if two are about 15% even better
-            # if more than 90%, 95%, or 97% of all data is in a single category.
+        # if all nulls, remove
+        # if two parts of the distribution are above 10% - ok, if two are about 15% even better
+        # if more than 90%, 95%, or 97% of all data is in a single category.
 
-    worksheet.freeze_panes(offsetRowDataHeader, 1) # # Freeze the first row and column
+    worksheet.freeze_panes(offsetRowDataHeader, 1)  # # Freeze the first row and column
 
     print('excel sheet completed - DOV')
 
